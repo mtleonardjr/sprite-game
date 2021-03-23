@@ -19,7 +19,7 @@ const player = {
 }
 
 const playerSprite = new Image();
-playerSprite.src = "rincewind.png";
+playerSprite.src = "usagitsukino.png";
 playerSprite.onload = function(){
     drawSprite(playerSprite, player.frameX*player.width, player.frameY*player.height, player.width, player.height, player.x, player.y, player.width, player.height)
 }
@@ -30,9 +30,7 @@ function drawSprite (img, sX, sY, sW, sH, dx, dy, dW, dH) {
 
 //Key Listener Functions
 window.addEventListener("keydown", function(e){
-    console.log(e.key)
     keys[e.key] = true
-    console.log(keys)
     player.moving = true;
 })
 window.addEventListener("keyup", function(e){
@@ -65,6 +63,35 @@ function handlePlayerFrame() {
     }
 }
 
+function drawBackground() {
+    tileLength = 50;
+    gridLength = 8;
+    ctx.fillStyle = "darkgreen";
+    ctx.fillRect(0, 0, tileLength, tileLength);
+    for (let i= 0; i<gridLength; i++) {
+        for (let j=0; j<gridLength; j++) {
+            let iValue = i%2;
+            let jValue = j%2;
+            if(iValue === 0) {
+                if ((iValue === 0)&&(jValue === 0)) {
+                    ctx.fillRect(i * tileLength, j* tileLength, tileLength, tileLength);
+                }  
+            } else {
+                if ((iValue === 1)&&(jValue === 1)) {
+                    ctx.fillRect(i * tileLength, j* tileLength, tileLength, tileLength);
+                }  
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+//Animation 
 let fps, fpsInterval, startTime, now, then, elapsed;
 
 function startAnimating(fps){
@@ -81,6 +108,7 @@ function animate () {
     if (elapsed > fpsInterval){
         then = now - (elapsed % fpsInterval)
         ctx.clearRect(0,0,canvas.width, canvas.height);
+        drawBackground();
         drawSprite(playerSprite, player.frameX*player.width, player.frameY*player.height, player.width, player.height, player.x, player.y, player.width, player.height)
         movePlayer();
         handlePlayerFrame();
