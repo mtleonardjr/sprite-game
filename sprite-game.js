@@ -7,14 +7,18 @@ canvas.height = 400;
 
 const keys = [];
 
+const tileLength = 50;
+
+let fps = 20;
+
 const player = {
-    x: 0,
+    x: 9,
     y: 0,
     width: 32,
     height: 48,
     frameX: 0,
     frameY: 0,
-    speed: 9,
+    speed: 10,
     moving: false
 }
 
@@ -30,28 +34,100 @@ function drawSprite (img, sX, sY, sW, sH, dx, dy, dW, dH) {
 
 //Key Listener Functions
 window.addEventListener("keydown", function(e){
+    console.log(e)
     keys[e.key] = true
-    player.moving = true;
+    console.log(keys)
 })
 window.addEventListener("keyup", function(e){
+
     delete keys[e.key];
-    player.moving = false;
+    
 })
 
-//Move speeds
+// //Move Player function that uses speed to move
+// function movePlayer() {
+//     if ((keys['ArrowRight'] || keys['Right']) && player.x < (canvas.width - player.width)) {
+//         player.x += player.speed;
+//         player.frameY = 2;
+//     } else if ((keys['ArrowLeft'] || keys['Left']) && player.x > 0) {
+//         player.x -= player.speed;
+//         player.frameY = 1;
+//     } else if ((keys['ArrowUp'] || keys['Up']) && player.y > 0){
+//         player.y -= player.speed;
+//         player.frameY = 3;
+//     } else if ((keys['ArrowDown'] || keys['Down']) && player.y < (canvas.height - player.height)){ 
+//         player.y += player.speed;
+//         player.frameY = 0;
+//     }
+// }
+
+//Move Player function that uses speed to move in grid spaces
+let fired = false;
 function movePlayer() {
-    if ((keys['ArrowRight'] || keys['Right']) && player.x < (canvas.width - player.width)) {
-        player.x += player.speed;
+    if ((keys['ArrowRight'] || keys['Right']) && player.x < (canvas.width - 60) && !fired) {
         player.frameY = 2;
-    } else if ((keys['ArrowLeft'] || keys['Left']) && player.x > 0) {
-        player.x -= player.speed;
+        fired = true;
+        player.moving = true;
+        var count = 0;
+        var id = setInterval(frame, 40);
+        function frame() {
+          if (count === 5) {
+            clearInterval(id);
+            fired = false;
+            player.moving = false;
+          } else {
+            count++;
+            player.x += player.speed;
+          }
+        }
+    } else if ((keys['ArrowLeft'] || keys['Left']) && player.x > 30 && !fired) {
         player.frameY = 1;
-    } else if ((keys['ArrowUp'] || keys['Up']) && player.y > 0){
-        player.y -= player.speed;
+        fired = true;
+        player.moving = true;
+        var count = 0;
+        var id = setInterval(frame, 40);
+        function frame() {
+          if (count === 5) {
+            clearInterval(id);
+            fired = false;
+            player.moving = false;
+          } else {
+            count++;
+            player.x -= player.speed;
+          }
+        }
+    } else if ((keys['ArrowUp'] || keys['Up']) && player.y > 30 && !fired){
         player.frameY = 3;
-    } else if ((keys['ArrowDown'] || keys['Down']) && player.y < (canvas.height - player.height)){ 
-        player.y += player.speed;
+        fired = true;
+        player.moving = true;
+        var count = 0;
+        var id = setInterval(frame, 40);
+        function frame() {
+          if (count === 5) {
+            clearInterval(id);
+            fired = false;
+            player.moving = false;
+          } else {
+            count++;
+            player.y -= player.speed;
+          }
+        }
+    } else if ((keys['ArrowDown'] || keys['Down']) && player.y < (canvas.height - 60) && !fired){ 
         player.frameY = 0;
+        fired = true;
+        player.moving = true;
+        var count = 0;
+        var id = setInterval(frame, 40);
+        function frame() {
+          if (count === 5) {
+            clearInterval(id);
+            fired = false;
+            player.moving = false;
+          } else {
+            count++;
+            player.y += player.speed;
+          }
+        }
     }
 }
 
@@ -64,7 +140,6 @@ function handlePlayerFrame() {
 }
 
 function drawBackground() {
-    tileLength = 50;
     gridLength = 8;
     ctx.fillStyle = "darkgreen";
     ctx.fillRect(0, 0, tileLength, tileLength);
@@ -92,7 +167,7 @@ function drawBackground() {
 
 
 //Animation 
-let fps, fpsInterval, startTime, now, then, elapsed;
+let  fpsInterval, startTime, now, then, elapsed;
 
 function startAnimating(fps){
     fpsInterval = 1000/fps;
@@ -116,7 +191,7 @@ function animate () {
     }
 }
 
-startAnimating(20);
+startAnimating(fps);
 
 // function animate() {
     // ctx.clearRect(0,0,canvas.width, canvas.height);
